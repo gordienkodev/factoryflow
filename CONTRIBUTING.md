@@ -71,9 +71,7 @@ git commit -m "style(schedule): improve timeline layout"
 ### Pull Request Requirements
 
 - Use a clear and descriptive title.
-- Explain what was changed and why.
 - Include instructions for testing.
-- Link related issues when applicable.
 - Keep each PR focused on a single task.
 - Resolve merge conflicts before merging.
 
