@@ -18,13 +18,30 @@ Use the following format:
 | `chore` | Maintenance and configuration | `chore/eslint-config` |
 | `style` | Styling and formatting | `style/orders-layout` |
 
+### Branch Strategy
+
+- `main` — stable production branch.
+- `dev` — primary development and integration branch.
+- All task-related pull requests must target `dev`.
+- Direct commits to `main` and `dev` are not allowed.
+- Changes are merged into `main` from `dev` for releases.
+
+### Merge Rules
+
+- Merge pull requests only after approval.
+- All required CI checks must pass before merging.
+- Use Squash and Merge for task-related pull requests.
+- Follow Conventional Commits for squash commit messages.
+- Delete task branches after merging.
+
+
 ### Rules
 
 - Use English and lowercase letters.
 - Separate words with hyphens (`kebab-case`).
 - Keep branch names short and descriptive.
 - One branch should represent one task or feature.
-- Create new branches from the latest `main`.
+- Create new branches from the latest `dev`.
 
 ## 2. Commit Message Conventions
 
@@ -62,7 +79,7 @@ git commit -m "style(schedule): improve timeline layout"
 
 ### Before Creating a Pull Request
 
-- Make sure your branch is up to date with `main`.
+- Make sure your branch is up to date with `dev`.
 - Verify that the application builds successfully.
 - Run available tests and lint checks.
 - Remove debugging code and unnecessary console logs.
@@ -81,11 +98,11 @@ git commit -m "style(schedule): improve timeline layout"
 
 ## 4. Development Workflow
 
-### Step 1: Update Main
+### Step 1: Update dev
 
 ```bash
-git switch main
-git pull origin main
+git switch dev
+git pull origin dev
 ```
 
 ### Step 2: Create a Branch
@@ -110,7 +127,7 @@ git push -u origin feat/machines-page
 ### Step 5: Create a Pull Request
 
 1. Open the repository on GitHub.
-2. Create a Pull Request targeting `main`.
+2. Create a Pull Request targeting `dev`.
 3. Fill out the PR template.
 4. Request a code review.
 5. Address review comments if necessary.
@@ -132,7 +149,7 @@ git push -u origin feat/machines-page
 - Do not commit generated files or dependencies such as `node_modules`.
 - Communicate significant architectural changes before implementing them.
 - Avoid unrelated changes in the same Pull Request.
-- Keep the `main` branch stable.
+- Keep the `dev` branch stable.
 
 ---
 
