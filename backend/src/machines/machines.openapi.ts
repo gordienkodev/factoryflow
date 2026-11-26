@@ -36,7 +36,7 @@ export function registerMachinesOpenApi(registry: OpenAPIRegistry) {
         summary: "Получить список станков",
         responses: {
             200: {
-                description: "Список станков",
+                description: "Станки от новых к старым. При одинаковой дате создания первым идёт станок с большим ID.",
                 content: {
                     "application/json": {
                         schema: machinesResponse,

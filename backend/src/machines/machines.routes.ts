@@ -8,7 +8,9 @@ const machineRouteId = z.string().regex(/^\d+$/).transform(Number).pipe(machineI
 
 machinesRouter.get("/", async (_req, res) => {
     const { prisma } = await import("../lib/prisma.js");
-    const machines = await prisma.machine.findMany();
+    const machines = await prisma.machine.findMany({
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    });
     res.json(machines);
 });
 
