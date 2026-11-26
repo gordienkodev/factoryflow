@@ -2,6 +2,7 @@ import { STATUS_CODES } from "node:http";
 import type { ErrorRequestHandler } from "express";
 
 export const invalidJsonError = { error: "Invalid JSON" };
+
 export const internalServerError = { error: "Внутренняя ошибка сервера" };
 
 export const handleHttpError: ErrorRequestHandler = (error: unknown, req, res, next) => {
