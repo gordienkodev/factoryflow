@@ -12,3 +12,15 @@ model Machine {
   name      String
   createdAt DateTime @default(now())
 }
+
+enum OrderStatus {
+  pending
+  completed
+}
+
+model Order {
+  id     Int         @id @default(autoincrement())
+  number String      @unique
+  name   String
+  status OrderStatus @default(pending)
+}
