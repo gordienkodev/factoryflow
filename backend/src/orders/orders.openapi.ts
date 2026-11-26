@@ -11,8 +11,14 @@ const orderNumber = orderText
     .refine((number) => [...number].length <= orderNumberMaxLength)
     .meta({ maxLength: orderNumberMaxLength });
 
-export const createOrderBody = z.object({ number: orderNumber, name: orderText });
-export const completeOrderBody = z.object({ status: z.literal("completed") });
+export const createOrderBody = z.object({
+    number: orderNumber,
+    name: orderText,
+});
+
+export const completeOrderBody = z.object({
+    status: z.literal("completed"),
+});
 
 const orderResponse = z.object({
     id: orderId,
@@ -20,26 +26,63 @@ const orderResponse = z.object({
     name: z.string(),
     status: z.enum(["pending", "completed"]),
 });
-const errorResponse = z.object({ error: z.string() });
+
+const errorResponse = z.object({
+    error: z.string(),
+});
 
 export const orderErrors = {
     invalidCreate: {
         error: `Укажите непустые номер и название заказа. Номер должен содержать не более ${orderNumberMaxLength} символов.`,
     },
-    duplicateNumber: { error: "Заказ с таким номером уже существует." },
-    invalidId: { error: "ID заказа должен быть положительным целым числом в диапазоне Int." },
-    invalidStatus: { error: 'Укажите статус "completed".' },
-    notFound: { error: "Заказ не найден." },
+    duplicateNumber: {
+        error: "Заказ с таким номером уже существует.",
+    },
+    invalidId: {
+        error: "ID заказа должен быть положительным целым числом в диапазоне Int.",
+    },
+    invalidStatus: {
+        error: 'Укажите статус "completed".',
+    },
+    notFound: {
+        error: "Заказ не найден.",
+    },
 };
 
-function errorExample(description: string, example: z.infer<typeof errorResponse>) {
-    return { description, content: { "application/json": { schema: errorResponse, example } } };
+function errorExample(
+    description: string,
+    example: z.infer<typeof errorResponse>,
+) {
+    return {
+        description,
+        content: {
+            "application/json": {
+                schema: errorResponse,
+                example,
+            },
+        },
+    };
 }
 
-const internalErrorResponse = errorExample("Внутренняя ошибка сервера", internalServerError);
-const createExample = { number: "O-104", name: "Точение вала" };
-const orderExample = { id: 1, ...createExample, status: "pending" };
-const completeExample = { status: "completed" };
+const internalErrorResponse = errorExample(
+    "Внутренняя ошибка сервера",
+    internalServerError,
+);
+
+const createExample = {
+    number: "O-104",
+    name: "Точение вала",
+};
+
+const orderExample = {
+    id: 1,
+    ...createExample,
+    status: "pending",
+};
+
+const completeExample = {
+    status: "completed",
+};
 
 export function registerOrdersOpenApi(registry: OpenAPIRegistry) {
     registry.registerPath({
@@ -53,8 +96,14 @@ export function registerOrdersOpenApi(registry: OpenAPIRegistry) {
                     "application/json": {
                         schema: z.array(orderResponse),
                         examples: {
-                            withOrders: { summary: "Список с заказом", value: [orderExample] },
-                            empty: { summary: "Пустой список", value: [] },
+                            withOrders: {
+                                summary: "Список с заказом",
+                                value: [orderExample],
+                            },
+                            empty: {
+                                summary: "Пустой список",
+                                value: [],
+                            },
                         },
                     },
                 },
@@ -70,13 +119,23 @@ export function registerOrdersOpenApi(registry: OpenAPIRegistry) {
         request: {
             body: {
                 required: true,
-                content: { "application/json": { schema: createOrderBody, example: createExample } },
+                content: {
+                    "application/json": {
+                        schema: createOrderBody,
+                        example: createExample,
+                    },
+                },
             },
         },
         responses: {
             201: {
                 description: "Заказ создан со статусом pending",
-                content: { "application/json": { schema: orderResponse, example: orderExample } },
+                content: {
+                    "application/json": {
+                        schema: orderResponse,
+                        example: orderExample,
+                    },
+                },
             },
             400: {
                 description: "Некорректный JSON, номер или название заказа",
@@ -84,13 +143,22 @@ export function registerOrdersOpenApi(registry: OpenAPIRegistry) {
                     "application/json": {
                         schema: errorResponse,
                         examples: {
-                            invalidJson: { summary: "Ошибка синтаксиса JSON", value: invalidJsonError },
-                            invalidFields: { summary: "Ошибка в номере или названии", value: orderErrors.invalidCreate },
+                            invalidJson: {
+                                summary: "Ошибка синтаксиса JSON",
+                                value: invalidJsonError,
+                            },
+                            invalidFields: {
+                                summary: "Ошибка в номере или названии",
+                                value: orderErrors.invalidCreate,
+                            },
                         },
                     },
                 },
             },
-            409: errorExample("Номер заказа уже используется", orderErrors.duplicateNumber),
+            409: errorExample(
+                "Номер заказа уже используется",
+                orderErrors.duplicateNumber,
+            ),
             500: internalErrorResponse,
         },
     });
@@ -103,18 +171,53 @@ export function registerOrdersOpenApi(registry: OpenAPIRegistry) {
             params: z.object({ id: orderId }),
             body: {
                 required: true,
-                content: { "application/json": { schema: completeOrderBody, example: completeExample } },
+                content: {
+                    "application/json": {
+                        schema: completeOrderBody,
+                        example: completeExample,
+                    },
+                },
             },
         },
         responses: {
             200: {
                 description: "Заказ выполнен",
                 content: {
-                    "application/json": { schema: orderResponse, example: { ...orderExample, ...completeExample } },
+                    "application/json": {
+                        schema: orderResponse,
+                        example: {
+                            ...orderExample,
+                            ...completeExample,
+                        },
+                    },
                 },
             },
-            400: errorExample("Некорректный ID или тело запроса", orderErrors.invalidStatus),
-            404: errorExample("Заказ не найден", orderErrors.notFound),
+            400: {
+                description: "Некорректный ID или тело запроса",
+                content: {
+                    "application/json": {
+                        schema: errorResponse,
+                        examples: {
+                            invalidId: {
+                                summary: "Некорректный ID",
+                                value: orderErrors.invalidId,
+                            },
+                            invalidStatus: {
+                                summary: "Некорректный статус",
+                                value: orderErrors.invalidStatus,
+                            },
+                            invalidJson: {
+                                summary: "Ошибка синтаксиса JSON",
+                                value: invalidJsonError,
+                            },
+                        },
+                    },
+                },
+            },
+            404: errorExample(
+                "Заказ не найден",
+                orderErrors.notFound,
+            ),
             500: internalErrorResponse,
         },
     });
