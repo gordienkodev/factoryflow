@@ -3,6 +3,8 @@ import cors from "cors";
 import { OpenAPIRegistry, OpenApiGeneratorV31 } from "@asteasolutions/zod-to-openapi";
 import swaggerUi from "swagger-ui-express";
 import { z } from "zod";
+import { machinesPath, registerMachinesOpenApi } from "./machines/machines.openapi.js";
+import { machinesRouter } from "./machines/machines.routes.js";
 
 export const app = express();
 
@@ -45,6 +47,9 @@ app.get(healthPath, (_req, res) => {
     const body: z.infer<typeof healthResponse> = { status: "ok" };
     res.json(body);
 });
+
+app.use(machinesPath, machinesRouter);
+registerMachinesOpenApi(registry);
 
 const openApi = new OpenApiGeneratorV31(registry.definitions).generateDocument({
     openapi: "3.1.0",
