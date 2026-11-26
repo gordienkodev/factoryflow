@@ -1,8 +1,9 @@
-import express, { type ErrorRequestHandler } from "express";
+import express from "express";
 import cors from "cors";
 import { OpenAPIRegistry, OpenApiGeneratorV31 } from "@asteasolutions/zod-to-openapi";
 import swaggerUi from "swagger-ui-express";
 import { z } from "zod";
+import { handleHttpError } from "./lib/http-errors.js";
 import { machinesPath, registerMachinesOpenApi } from "./machines/machines.openapi.js";
 import { machinesRouter } from "./machines/machines.routes.js";
 
@@ -13,17 +14,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
-const handleJsonParseError: ErrorRequestHandler = (error: unknown, _req, res, next) => {
-    if (typeof error === "object" && error !== null && "type" in error && error.type === "entity.parse.failed") {
-        res.status(400).json({ error: "Invalid JSON" });
-        return;
-    }
-
-    next(error);
-};
-
-app.use(handleJsonParseError);
 
 const registry = new OpenAPIRegistry();
 const healthPath = "/api/health";
@@ -61,3 +51,4 @@ app.get("/api/openapi.json", (_req, res) => {
 });
 
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openApi));
+app.use(handleHttpError);

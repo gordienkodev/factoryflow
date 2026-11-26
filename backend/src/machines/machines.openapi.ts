@@ -1,5 +1,6 @@
 import type { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
+import { internalServerError } from "../lib/http-errors.js";
 
 export const machinesPath = "/api/machines";
 export const machineId = z.number().int().min(1).max(2_147_483_647);
@@ -21,6 +22,10 @@ const machineResponse = z.object({
 });
 const machinesResponse = z.array(machineResponse);
 const errorResponse = z.object({ error: z.string() });
+const internalErrorResponse = {
+    description: "Внутренняя ошибка сервера",
+    content: { "application/json": { schema: errorResponse, example: internalServerError } },
+};
 
 const machineExample = {
     id: 1,
@@ -47,6 +52,7 @@ export function registerMachinesOpenApi(registry: OpenAPIRegistry) {
                     },
                 },
             },
+            500: internalErrorResponse,
         },
     });
 
@@ -76,6 +82,7 @@ export function registerMachinesOpenApi(registry: OpenAPIRegistry) {
                     },
                 },
             },
+            500: internalErrorResponse,
         },
     });
 
@@ -118,6 +125,7 @@ export function registerMachinesOpenApi(registry: OpenAPIRegistry) {
                 description: "Станок не найден",
                 content: { "application/json": { schema: errorResponse, example: { error: "Станок не найден." } } },
             },
+            500: internalErrorResponse,
         },
     });
 }
