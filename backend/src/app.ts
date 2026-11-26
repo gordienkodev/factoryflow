@@ -6,6 +6,8 @@ import { z } from "zod";
 import { handleHttpError } from "./lib/http-errors.js";
 import { machinesPath, registerMachinesOpenApi } from "./machines/machines.openapi.js";
 import { machinesRouter } from "./machines/machines.routes.js";
+import { ordersPath, registerOrdersOpenApi } from "./orders/orders.openapi.js";
+import { ordersRouter } from "./orders/orders.routes.js";
 
 export const app = express();
 
@@ -38,8 +40,13 @@ app.get(healthPath, (_req, res) => {
     res.json(body);
 });
 
+
 app.use(machinesPath, machinesRouter);
 registerMachinesOpenApi(registry);
+
+app.use(ordersPath, ordersRouter);
+registerOrdersOpenApi(registry);
+
 
 const openApi = new OpenApiGeneratorV31(registry.definitions).generateDocument({
     openapi: "3.1.0",
