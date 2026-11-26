@@ -6,6 +6,8 @@ export const ordersPath = "/api/orders";
 export const orderId = z.number().int().min(1).max(2_147_483_647);
 
 const orderText = z.string().trim().min(1);
+const orderNameMaxLength = 255;
+const orderName = orderText.max(orderNameMaxLength);
 const orderNumberMaxLength = 10;
 const orderNumber = orderText
     .refine((number) => [...number].length <= orderNumberMaxLength)
@@ -13,7 +15,7 @@ const orderNumber = orderText
 
 export const createOrderBody = z.object({
     number: orderNumber,
-    name: orderText,
+    name: orderName,
 });
 
 export const completeOrderBody = z.object({
@@ -33,7 +35,7 @@ const errorResponse = z.object({
 
 export const orderErrors = {
     invalidCreate: {
-        error: `Укажите непустые номер и название заказа. Номер должен содержать не более ${orderNumberMaxLength} символов.`,
+        error: `Укажите непустые номер и название заказа. Номер должен содержать не более ${orderNumberMaxLength} символов, название — не более ${orderNameMaxLength} символов.`,
     },
     duplicateNumber: {
         error: "Заказ с таким номером уже существует.",
