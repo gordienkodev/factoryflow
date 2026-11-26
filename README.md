@@ -24,12 +24,22 @@ Create a local `backend/.env` from
 project's Neon PostgreSQL connection string and set it as `DATABASE_URL`.
 Keep the connection string in your local `backend/.env` and never commit that file.
 
-Once `DATABASE_URL` is set, run this command from the `backend` directory to
-generate Prisma Client.
+Once `DATABASE_URL` points to the database you want to use, run these commands
+from the `backend` directory to generate Prisma Client and apply pending migrations.
 
 ```bash
 npx prisma generate --config prisma7.config.ts
+npm run db:deploy
 ```
+
+### Check the machines API in Swagger
+
+Start the backend with `npm run dev` and open [Swagger UI](http://localhost:3000/api/docs/).
+
+1. Call `GET /api/machines`. Expect `200` and an array. An empty database returns `[]`.
+2. Send `{"name":"CNC Lathe 1"}` to `POST /api/machines`. Expect `201` and copy the returned `id`.
+3. Call `GET /api/machines` again and verify that the new machine has the same `id`.
+4. Call `PATCH /api/machines/{id}` with that `id` and `{"isActive":false}`. Expect `200` and `isActive: false`.
 
 ## Example project structure
 
