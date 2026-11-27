@@ -1,4 +1,5 @@
 import './style.css';
+import { startRouter } from './router';
 
 const appElement = document.querySelector<HTMLDivElement>('[data-js-app]')!;
-appElement.innerHTML = '<h1>FactoryFlow</h1>';
+startRouter(appElement);
