@@ -1,3 +1,9 @@
+import { renderAboutPage } from "./pages/about";
+
+const pageRenderers: Record<string, (container: HTMLElement) => void> = {
+  '/about': renderAboutPage,
+};
+
 const routes = [
   { path: '/about', title: 'О приложении' },
   { path: '/orders', title: 'Заказы' },
@@ -6,7 +12,7 @@ const routes = [
   { path: '/downtimes', title: 'Простои' },
 ] as const;
 
-const homePath = '/schedule';
+const homePath = '/about';
 
 function createRouteLink(path: string, title: string): HTMLAnchorElement {
   const link = document.createElement('a');
@@ -59,19 +65,27 @@ export function startRouter(app: HTMLElement): void {
       }
     }
 
-    const heading = document.createElement('h1');
-    heading.textContent = title;
-    heading.tabIndex = -1;
-    page.replaceChildren(heading);
+    const renderPage = pageRenderers[path];
 
-    if (!route) {
-      const message = document.createElement('p');
-      message.textContent = 'Ошибка 404';
-      page.append(message, createRouteLink(homePath, 'Перейти к расписанию'));
+    if (renderPage) {
+      page.replaceChildren();
+      renderPage(page);
+    } else {
+      const heading = document.createElement('h1');
+      heading.textContent = title;
+      heading.tabIndex = -1;
+      page.replaceChildren(heading);
+
+      if (!route) {
+        const message = document.createElement('p');
+        message.textContent = 'Ошибка 404';
+        page.append(message, createRouteLink(homePath, 'Перейти к расписанию'));
+      }
     }
 
     if (focusHeading) {
-      heading.focus({ preventScroll: true });
+      const heading = page.querySelector<HTMLHeadingElement>('h1');
+      heading?.focus({ preventScroll: true });
     }
   }
 
