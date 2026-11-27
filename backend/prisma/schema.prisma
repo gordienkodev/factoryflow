@@ -12,6 +12,9 @@ model Machine {
   name      String
   createdAt DateTime @default(now())
   isActive  Boolean  @default(true)
+
+  operations Operation[]
+  downtimes Downtime[]
 }
 
 enum OrderStatus {
@@ -24,4 +27,43 @@ model Order {
   number String      @unique
   name   String
   status OrderStatus @default(pending)
+
+  operations Operation[]
+}
+
+model Operation {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  machineId Int
+  startTime DateTime
+  endTime   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  machine Machine @relation(fields: [machineId], references: [id])
+
+  @@index([orderId, startTime, endTime])
+  @@index([machineId, startTime, endTime])
+}
+
+enum DowntimeType {
+  MAINTENANCE
+  BREAKDOWN
+  OTHER
+}
+
+model Downtime {
+  id        Int      @id @default(autoincrement())
+  machineId Int
+  reason String
+  type DowntimeType
+  startTime DateTime
+  endTime   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  machine Machine @relation(fields: [machineId], references: [id])
+
+  @@index([machineId, startTime, endTime])
 }
