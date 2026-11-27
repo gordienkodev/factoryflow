@@ -51,6 +51,27 @@ Start the backend with `npm run dev` and open [Swagger UI](http://localhost:3000
 3. Call `GET /api/machines` again and verify that the new machine has the same `id`.
 4. Call `PATCH /api/machines/{id}` with that `id` and `{"isActive":false}`. Expect `200` and `isActive: false`.
 
+## Format code with Prettier
+
+Run these commands from the repository root after installing the frontend and
+backend dependencies with `npm ci` in each directory.
+
+Check formatting without changing files.
+
+```bash
+npm --prefix frontend run format:check
+npm --prefix backend run format:check
+```
+
+Apply formatting to the source files in each package's `src` directory.
+
+```bash
+npm --prefix frontend run format
+npm --prefix backend run format
+```
+
+Both packages use the root `.prettierrc.json` and their own `.prettierignore`.
+
 ## Example project structure
 
 This tree shows the intended layout, including the planned frontend, API routes,
