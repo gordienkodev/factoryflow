@@ -3,7 +3,16 @@ import type { Machine, Order } from "./types"
 async function fetchJson<T>(path: string, options?: RequestInit): Promise<T> {
     const response = await fetch(path, options)
     if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        try {
+            const errorData = await response.json()
+            if (typeof errorData?.error === 'string') {
+                errorMessage = errorData.error
+            }
+        } catch {
+
+        }
+        throw new Error(errorMessage)
     }
     const data = await response.json()
     return data
