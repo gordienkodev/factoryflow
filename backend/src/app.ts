@@ -3,11 +3,17 @@ import cors from "cors";
 import { OpenAPIRegistry, OpenApiGeneratorV31 } from "@asteasolutions/zod-to-openapi";
 import swaggerUi from "swagger-ui-express";
 import { z } from "zod";
+import { downtimesPath, registerDowntimesOpenApi } from "./downtimes/downtimes.openapi.js";
+import { downtimesRouter } from "./downtimes/downtimes.routes.js";
 import { handleHttpError } from "./lib/http-errors.js";
 import { machinesPath, registerMachinesOpenApi } from "./machines/machines.openapi.js";
 import { machinesRouter } from "./machines/machines.routes.js";
+import { operationsPath, registerOperationsOpenApi } from "./operations/operations.openapi.js";
+import { operationsRouter } from "./operations/operations.routes.js";
 import { ordersPath, registerOrdersOpenApi } from "./orders/orders.openapi.js";
 import { ordersRouter } from "./orders/orders.routes.js";
+import { registerScheduleOpenApi, schedulePath } from "./schedule/schedule.openapi.js";
+import { scheduleRouter } from "./schedule/schedule.routes.js";
 
 export const app = express();
 
@@ -47,6 +53,14 @@ registerMachinesOpenApi(registry);
 app.use(ordersPath, ordersRouter);
 registerOrdersOpenApi(registry);
 
+app.use(operationsPath, operationsRouter);
+registerOperationsOpenApi(registry);
+
+app.use(downtimesPath, downtimesRouter);
+registerDowntimesOpenApi(registry);
+
+app.use(schedulePath, scheduleRouter);
+registerScheduleOpenApi(registry);
 
 const openApi = new OpenApiGeneratorV31(registry.definitions).generateDocument({
     openapi: "3.1.0",

@@ -13,12 +13,33 @@ const orderResponseSelect = {
     status: true,
 } satisfies Prisma.OrderSelect;
 
+type OrderWithSchedule = Prisma.OrderGetPayload<{ select: typeof orderResponseSelect }> & {
+    operationsCount: number;
+    scheduledDurationMinutes: number;
+};
+
 ordersRouter.get("/", async (_req, res) => {
     const { prisma } = await import("../lib/prisma.js");
-    const orders = await prisma.order.findMany({
-        orderBy: { id: "desc" },
-        select: orderResponseSelect,
-    });
+    const orders = await prisma.$queryRaw<OrderWithSchedule[]>`
+        SELECT
+            o."id",
+            o."number",
+            o."name",
+            o."status"::text AS "status",
+            COALESCE(schedule."operationsCount", 0)::double precision AS "operationsCount",
+            COALESCE(schedule."scheduledDurationMinutes", 0)::double precision AS "scheduledDurationMinutes"
+        FROM "Order" AS o
+        LEFT JOIN (
+            SELECT
+                "orderId",
+                COUNT(*) AS "operationsCount",
+                EXTRACT(EPOCH FROM SUM("endTime" - "startTime")) / 60 AS "scheduledDurationMinutes"
+            FROM "Operation"
+            GROUP BY "orderId"
+        ) AS schedule ON schedule."orderId" = o."id"
+        ORDER BY o."id" DESC
+    `;
+
     res.json(orders);
 });
 
