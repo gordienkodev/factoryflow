@@ -17,9 +17,24 @@ ordersRouter.get("/", async (_req, res) => {
     const { prisma } = await import("../lib/prisma.js");
     const orders = await prisma.order.findMany({
         orderBy: { id: "desc" },
-        select: orderResponseSelect,
+        select: {
+            ...orderResponseSelect,
+            operations: { select: { startTime: true, endTime: true } },
+        },
     });
-    res.json(orders);
+
+    const ordersWithSchedule = orders.map(({ operations, ...order }) => {
+        const scheduledDurationMs = operations.reduce(
+            (total, { startTime, endTime }) => total + (endTime.getTime() - startTime.getTime()),
+            0,
+        );
+        return {
+            ...order,
+            operationsCount: operations.length,
+            scheduledDurationMinutes: scheduledDurationMs / 60_000,
+        };
+    });
+    res.json(ordersWithSchedule);
 });
 
 ordersRouter.post("/", async (req, res) => {

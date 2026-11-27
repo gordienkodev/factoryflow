@@ -29,6 +29,11 @@ const orderResponse = z.object({
     status: z.enum(["pending", "completed"]),
 });
 
+const orderListItemResponse = orderResponse.extend({
+    operationsCount: z.number().int().nonnegative().describe("Количество запланированных операций заказа"),
+    scheduledDurationMinutes: z.number().nonnegative().describe("Суммарная длительность всех операций заказа в минутах"),
+});
+
 const errorResponse = z.object({
     error: z.string(),
 });
@@ -96,11 +101,14 @@ export function registerOrdersOpenApi(registry: OpenAPIRegistry) {
                 description: "Список заказов в порядке убывания ID",
                 content: {
                     "application/json": {
-                        schema: z.array(orderResponse),
+                        schema: z.array(orderListItemResponse),
                         examples: {
                             withOrders: {
-                                summary: "Список с заказом",
-                                value: [orderExample],
+                                summary: "Заказы с запланированными операциями и без них",
+                                value: [
+                                    { ...orderExample, id: 2, number: "O-105", operationsCount: 3, scheduledDurationMinutes: 300 },
+                                    { ...orderExample, operationsCount: 0, scheduledDurationMinutes: 0 },
+                                ],
                             },
                             empty: {
                                 summary: "Пустой список",
