@@ -32,7 +32,9 @@ export function startRouter(app: HTMLElement): void {
   const navigation = document.createElement('nav');
   navigation.className = 'navigation';
   navigation.setAttribute('aria-label', 'Основное меню');
-  const navigationLinks = routes.map(({ path, title }) => createRouteLink(path, title));
+  const navigationLinks = routes.map(({ path, title }) =>
+    createRouteLink(path, title),
+  );
   navigation.append(...navigationLinks);
   sidebar.append(brand, navigation);
 
@@ -43,7 +45,11 @@ export function startRouter(app: HTMLElement): void {
   function render(focusHeading = false): void {
     if (window.location.pathname === '/') {
       const { search, hash } = window.location;
-      window.history.replaceState(window.history.state, '', `${homePath}${search}${hash}`);
+      window.history.replaceState(
+        window.history.state,
+        '',
+        `${homePath}${search}${hash}`,
+      );
     }
 
     const path = window.location.pathname.replace(/\/$/, '');
@@ -76,8 +82,15 @@ export function startRouter(app: HTMLElement): void {
   }
 
   app.addEventListener('click', (event) => {
-    if (event.defaultPrevented || event.button !== 0 || event.metaKey ||
-        event.ctrlKey || event.shiftKey || event.altKey || !(event.target instanceof Element)) {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      !(event.target instanceof Element)
+    ) {
       return;
     }
 
