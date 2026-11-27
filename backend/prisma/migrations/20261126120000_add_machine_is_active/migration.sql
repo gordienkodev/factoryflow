@@ -1,0 +1,1 @@
+ALTER TABLE "Machine" ADD COLUMN "isActive" BOOLEAN NOT NULL DEFAULT true;
