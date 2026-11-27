@@ -1,5 +1,15 @@
 # factoryflow
 
+## Run the frontend
+
+From the `frontend` directory, run `npm ci` and `npm run dev`, then open
+<http://localhost:5173>. Vite serves the frontend routes directly, including
+`/schedule`, `/orders`, and `/machines`.
+
+When deploying the frontend build, configure the host to serve `index.html`
+for frontend page requests so direct links and refreshes work. Route `/api`
+requests to the backend if it shares the same origin.
+
 ## Run the backend
 
 Run these commands from the repository root.
