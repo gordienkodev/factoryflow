@@ -1,7 +1,9 @@
-import { renderAboutPage } from "./pages/about";
+import { renderAboutPage } from './pages/about';
+import { renderMachinesPage } from './pages/machines';
 
 const pageRenderers: Record<string, (container: HTMLElement) => void> = {
   '/about': renderAboutPage,
+  '/machines': renderMachinesPage,
 };
 
 const routes = [
