@@ -16,11 +16,9 @@ export type Operation = {
   id: number;
   orderId: number;
   machineId: number;
-  name: string;
   startTime: string;
   endTime: string;
-  status: 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED';
-  createdAt: string;
+  order: Order;
 };
 
 export type Downtime = {
@@ -30,5 +28,4 @@ export type Downtime = {
   type: 'MAINTENANCE' | 'BREAKDOWN' | 'OTHER';
   startTime: string;
   endTime: string;
-  createdAt: string;
 };

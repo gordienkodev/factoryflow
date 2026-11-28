@@ -1,4 +1,4 @@
-import type { Machine, Order } from './types';
+import type { Downtime, Machine, Operation, Order } from './types';
 
 async function fetchJson<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(path, options);
@@ -8,6 +8,8 @@ async function fetchJson<T>(path: string, options?: RequestInit): Promise<T> {
       const errorData = await response.json();
       if (typeof errorData?.error === 'string') {
         errorMessage = errorData.error;
+      } else if (typeof errorData?.message === 'string') {
+        errorMessage = errorData.message;
       }
     } catch {}
     throw new Error(errorMessage);
@@ -24,6 +26,24 @@ export async function getMachines(): Promise<Machine[]> {
 export async function getOrders(): Promise<Order[]> {
   const path = '/api/orders';
   return fetchJson<Order[]>(path);
+}
+
+export function createOperation(
+  data: Pick<Operation, 'orderId' | 'machineId' | 'startTime' | 'endTime'>,
+): Promise<Operation> {
+  return fetchJson<Operation>('/api/operations', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
+export function createDowntime(data: Omit<Downtime, 'id'>): Promise<Downtime> {
+  return fetchJson<Downtime>('/api/downtimes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
 }
 
 export async function createMachine(data: { name: string }): Promise<Machine> {
