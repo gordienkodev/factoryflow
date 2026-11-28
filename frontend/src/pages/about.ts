@@ -31,7 +31,7 @@ export function renderAboutPage(container: HTMLElement): void {
       featuresList.classList.add('about__list');
       features.append(featuresList);
 
-        const featureItemList = ['Станки и их статус', 'Заказы', 'Операции', 'Расписание', 'Простои'];
+        const featureItemList = ['Станки и их статус', 'Заказы', 'Операции', 'Расписание'];
         for (const item of featureItemList) {
           const featureItem = document.createElement('li');
           featureItem.classList.add('about__item');
