@@ -1,5 +1,6 @@
 import { createOrder, getOrders } from '../api';
 import type { Order } from '../types';
+import { clearFieldError, showFieldError } from '../utils/form';
 
 const statusLabels: Record<Order['status'], string> = {
   pending: 'Ожидает выполнения',
@@ -127,21 +128,6 @@ export function renderOrdersPage(container: HTMLElement): void {
       listStatus.textContent = errorMessage;
       retry.hidden = false;
     }
-  }
-
-  function showFieldError(
-    input: HTMLInputElement,
-    errorElement: HTMLElement,
-    message: string,
-  ): void {
-    input.setAttribute('aria-invalid', 'true');
-    errorElement.textContent = message;
-    input.focus();
-  }
-
-  function clearFieldError(input: HTMLInputElement, error: HTMLElement): void {
-    input.removeAttribute('aria-invalid');
-    error.textContent = '';
   }
 
   retry.addEventListener('click', () => void loadOrders());
