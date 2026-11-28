@@ -1,9 +1,12 @@
 import { createMachine, getMachines } from '../api';
 import type { Machine } from '../types';
 
+let pendingMachineCreation: Promise<Machine> | undefined;
+
 function createMachineCard(machine: Machine): HTMLElement {
   const card = document.createElement('article');
   card.className = 'machine-card';
+  card.dataset.machineId = String(machine.id);
 
   const name = document.createElement('h2');
   name.className = 'machine-card__name';
@@ -89,7 +92,36 @@ export function renderMachinesPage(container: HTMLElement): void {
     }
   }
 
-  form.addEventListener('submit', async (event) => {
+  async function showMachineCreation(
+    creation: Promise<Machine>,
+  ): Promise<void> {
+    submit.disabled = true;
+    input.readOnly = true;
+    formStatus.textContent = 'Сохраняем станок…';
+    try {
+      const machine = await creation;
+      if (!form.isConnected) {
+        return;
+      }
+
+      grid.querySelector(`[data-machine-id="${machine.id}"]`)?.remove();
+      grid.prepend(createMachineCard(machine));
+      grid.hidden = false;
+
+      form.reset();
+      formStatus.textContent = 'Станок добавлен.';
+      await loadMachines('Не удалось обновить список станков.');
+    } catch (error) {
+      const message = 'Не удалось добавить станок.';
+      formStatus.textContent =
+        error instanceof Error ? `${message} ${error.message}` : message;
+    } finally {
+      input.readOnly = false;
+      submit.disabled = false;
+    }
+  }
+
+  form.addEventListener('submit', (event) => {
     event.preventDefault();
     if (submit.disabled) {
       return;
@@ -102,23 +134,14 @@ export function renderMachinesPage(container: HTMLElement): void {
       return;
     }
 
-    submit.disabled = true;
-    input.readOnly = true;
-    formStatus.textContent = 'Сохраняем станок…';
-    try {
-      await createMachine({ name });
-      form.reset();
-      formStatus.textContent = 'Станок добавлен.';
-      await loadMachines('Не удалось обновить список станков.');
-    } catch (error) {
-      const message = 'Не удалось добавить станок.';
-      formStatus.textContent =
-        error instanceof Error ? `${message} ${error.message}` : message;
-    } finally {
-      input.readOnly = false;
-      submit.disabled = false;
-    }
+    pendingMachineCreation = createMachine({ name }).finally(() => {
+      pendingMachineCreation = undefined;
+    });
+    void showMachineCreation(pendingMachineCreation);
   });
 
   void loadMachines();
+  if (pendingMachineCreation) {
+    void showMachineCreation(pendingMachineCreation);
+  }
 }
