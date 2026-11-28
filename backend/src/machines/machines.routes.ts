@@ -50,23 +50,19 @@ machinesRouter.post('/', async (req, res) => {
 machinesRouter.patch('/:id', async (req, res) => {
   const id = machineRouteId.safeParse(req.params.id);
   if (!id.success) {
-    res
-      .status(400)
-      .json({
-        error:
-          'ID станка должен быть положительным целым числом в диапазоне Int.',
-      });
+    res.status(400).json({
+      error:
+        'ID станка должен быть положительным целым числом в диапазоне Int.',
+    });
     return;
   }
 
   const body = updateMachineBody.safeParse(req.body);
   if (!body.success) {
-    res
-      .status(400)
-      .json({
-        error:
-          'Укажите непустое название станка или логическое значение isActive.',
-      });
+    res.status(400).json({
+      error:
+        'Укажите непустое название станка или логическое значение isActive.',
+    });
     return;
   }
 
