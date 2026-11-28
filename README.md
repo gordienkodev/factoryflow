@@ -91,7 +91,6 @@ factoryflow/
 │       │   ├── orders.ts
 │       │   ├── machines.ts
 │       │   ├── schedule.ts
-│       │   └── downtimes.ts
 │       ├── timeline/
 │       │   ├── render.ts
 │       │   └── geometry.ts
@@ -115,7 +114,6 @@ factoryflow/
 │       │   ├── orders.ts
 │       │   ├── machines.ts
 │       │   ├── operations.ts
-│       │   ├── downtimes.ts
 │       │   └── schedule.ts
 │       ├── services/
 │       │   └── scheduling.ts

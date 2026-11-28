@@ -9,7 +9,6 @@ const routes = [
   { path: '/orders', title: 'Заказы' },
   { path: '/machines', title: 'Станки' },
   { path: '/schedule', title: 'Расписание' },
-  { path: '/downtimes', title: 'Простои' },
 ] as const;
 
 const homePath = '/about';
