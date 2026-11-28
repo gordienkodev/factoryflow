@@ -1,5 +1,6 @@
 import { createMachine, getMachines } from '../api';
 import type { Machine } from '../types';
+import { formatErrorMessage } from '../utils/errors';
 
 let pendingMachineCreation: Promise<Machine> | undefined;
 
@@ -84,10 +85,7 @@ export function renderMachinesPage(container: HTMLElement): void {
       status.textContent = grid.hidden ? 'Станков пока нет.' : '';
     } catch (error) {
       if (version === loadVersion) {
-        status.textContent =
-          error instanceof Error
-            ? `${errorMessage} ${error.message}`
-            : errorMessage;
+        status.textContent = formatErrorMessage(errorMessage, error);
       }
     }
   }
@@ -112,9 +110,10 @@ export function renderMachinesPage(container: HTMLElement): void {
       formStatus.textContent = 'Станок добавлен.';
       await loadMachines('Не удалось обновить список станков.');
     } catch (error) {
-      const message = 'Не удалось добавить станок.';
-      formStatus.textContent =
-        error instanceof Error ? `${message} ${error.message}` : message;
+      formStatus.textContent = formatErrorMessage(
+        'Не удалось добавить станок.',
+        error,
+      );
     } finally {
       input.readOnly = false;
       submit.disabled = false;
