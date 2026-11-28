@@ -1,0 +1,151 @@
+.schedule-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.schedule-button,
+.schedule-dialog__close {
+  font: inherit;
+  cursor: pointer;
+}
+
+.schedule-button {
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 1px solid #b8c2d3;
+  border-radius: 8px;
+  background: #fff;
+  color: inherit;
+  font-weight: 600;
+}
+
+.schedule-button--primary {
+  border-color: #2855c7;
+  background: #2855c7;
+  color: #fff;
+}
+
+.schedule-button:disabled,
+.schedule-dialog__close:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.schedule-status {
+  color: #216340;
+}
+
+.schedule-dialog {
+  width: min(520px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  padding: 24px;
+  border: 1px solid #d6dce6;
+  border-radius: 12px;
+  color: #1f2328;
+}
+
+.schedule-dialog::backdrop {
+  background: rgb(23 32 51 / 55%);
+}
+
+.schedule-dialog h2 {
+  margin: 0 34px 18px 0;
+  font-size: 23px;
+}
+
+.schedule-dialog__close {
+  position: absolute;
+  top: 17px;
+  right: 17px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.schedule-dialog fieldset {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.schedule-dialog label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.schedule-dialog input,
+.schedule-dialog select,
+.schedule-dialog textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #b8c2d3;
+  border-radius: 6px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  font-weight: 400;
+}
+
+.schedule-dialog textarea {
+  resize: vertical;
+}
+
+.schedule-dialog__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.schedule-dialog__hint,
+.schedule-dialog__status,
+.schedule-dialog__error {
+  margin: 0;
+  font-size: 14px;
+}
+
+.schedule-dialog__hint,
+.schedule-dialog__status {
+  color: #4b5568;
+}
+
+.schedule-dialog__status:not(:empty),
+.schedule-dialog__error:not(:empty) {
+  margin-top: 12px;
+}
+
+.schedule-dialog__error {
+  color: #a12327;
+}
+
+.schedule-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+@media (max-width: 380px) {
+  .schedule-dialog {
+    padding: 16px;
+  }
+
+  .schedule-dialog__row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
